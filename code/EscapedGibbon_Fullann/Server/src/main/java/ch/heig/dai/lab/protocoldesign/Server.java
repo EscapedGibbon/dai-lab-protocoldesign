@@ -1,14 +1,13 @@
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class Server {
 
-    // Supported operations as constants
+    // Constantes pour les opérations supportées
     private static final String WELCOME_MESSAGE = "Welcome! Type 'HELP' to see available commands and usage.";
     private static final int SERVER_PORT = 1234;
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
             System.out.println("Server is listening on port " + SERVER_PORT);
 
@@ -17,20 +16,20 @@ public class Server {
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                    // Send welcome message to client
+                    // Envoyer un message de bienvenue au client
                     out.println(WELCOME_MESSAGE);
 
                     String clientMessage;
                     while ((clientMessage = in.readLine()) != null) {
-                        // Check for termination command
+                        // Vérifier la commande de terminaison
                         if (clientMessage.trim().equalsIgnoreCase("EXIT")) {
                             out.println("Goodbye!");
                             break;
                         }
 
-                        // Process client message
+                        // Traiter le message du client
                         String response = processRequest(clientMessage);
-                        out.println(response);
+                        sendMultilineResponse(out, response);
                     }
                 } catch (IOException e) {
                     System.out.println("Client disconnected or error occurred: " + e.getMessage());
@@ -41,6 +40,9 @@ public class Server {
         }
     }
 
+    /**
+     * Traite la requête du client et retourne la réponse appropriée.
+     */
     private static String processRequest(String request) {
         String[] tokens = request.trim().split("\\s+");
         if (tokens.length == 1 && tokens[0].equalsIgnoreCase("HELP")) {
@@ -57,10 +59,10 @@ public class Server {
         try {
             a = Double.parseDouble(tokens[1]);
             if (tokens.length == 2) {
-                // Single-operand operations
+                // Opérations à un seul opérande
                 return "Result: " + calculate(operation, a);
             } else if (tokens.length == 3) {
-                // Two-operand operations
+                // Opérations à deux opérandes
                 double b = Double.parseDouble(tokens[2]);
                 return "Result: " + calculate(operation, a, b);
             }
@@ -73,8 +75,9 @@ public class Server {
         return "Error: Invalid request format.";
     }
 
-
-
+    /**
+     * Calcule les opérations binaires
+     */
     private static double calculate(String operation, double a, double b) {
         switch (operation) {
             case "ADD": return a + b;
@@ -91,6 +94,9 @@ public class Server {
         }
     }
 
+    /**
+     * Calcule les opérations unaires
+     */
     private static double calculate(String operation, double a) {
         switch (operation) {
             case "EXP": return Math.exp(a);
@@ -111,6 +117,9 @@ public class Server {
         }
     }
 
+    /**
+     * Fournit le message d'aide en plusieurs lignes.
+     */
     private static String getHelpMessage() {
         return "Available commands:\n\n" +
                 "- ADD a b     : Adds two numbers (a + b).\n" +
@@ -133,5 +142,16 @@ public class Server {
                 "- ROUND a     : Rounds a to the nearest integer.\n\n" +
                 "- HELP        : Displays this help message with explanations for each command.\n" +
                 "- EXIT        : Closes the connection to the server.\n";
+    }
+
+    /**
+     * Envoie une réponse multi-lignes au client, en ajoutant un marqueur <END> à la fin.
+     */
+    private static void sendMultilineResponse(PrintWriter out, String response) {
+        String[] lines = response.split("\n");
+        for (String line : lines) {
+            out.println(line);
+        }
+        out.println("<END>");  // Marqueur de fin
     }
 }
