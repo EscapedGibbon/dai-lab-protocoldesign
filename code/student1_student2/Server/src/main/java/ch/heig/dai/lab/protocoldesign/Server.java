@@ -5,8 +5,7 @@ import java.util.*;
 public class Server {
 
     // Supported operations as constants
-    private static final String WELCOME_MESSAGE = "Welcome! Supported operations: ADD, SUB, MUL, DIV, POW, MOD, " + "SQRT, EXP, LN, SIN, COS, TAN, ABS, MAX, MIN, CEIL, FLOOR, ROUND";
-
+    private static final String WELCOME_MESSAGE = "Welcome! Type 'HELP' to see available commands and usage.";
     private static final int SERVER_PORT = 1234;
     public static void main(String[] args) {
 
@@ -44,8 +43,12 @@ public class Server {
 
     private static String processRequest(String request) {
         String[] tokens = request.trim().split("\\s+");
+        if (tokens.length == 1 && tokens[0].equalsIgnoreCase("HELP")) {
+            return getHelpMessage();
+        }
+
         if (tokens.length < 2 || tokens.length > 3) {
-            return "Error: Invalid format. Use <OPERATION> <OPERAND1> [OPERAND2]";
+            return "Error: Invalid format. Use <OPERATION> <OPERAND1> [OPERAND2]. Type 'HELP' for a list of commands.";
         }
 
         String operation = tokens[0].toUpperCase();
@@ -69,6 +72,7 @@ public class Server {
 
         return "Error: Invalid request format.";
     }
+
 
 
     private static double calculate(String operation, double a, double b) {
@@ -107,13 +111,27 @@ public class Server {
         }
     }
 
-    private static long factorial(int n) {
-        if (n == 0 || n == 1) return 1;
-        long result = 1;
-        for (int i = 2; i <= n; i++) {
-            result *= i;
-        }
-        return result;
+    private static String getHelpMessage() {
+        return "Available commands:\n\n" +
+                "- ADD a b     : Adds two numbers (a + b).\n" +
+                "- SUB a b     : Subtracts the second number from the first (a - b).\n" +
+                "- MUL a b     : Multiplies two numbers (a * b).\n" +
+                "- DIV a b     : Divides the first number by the second (a / b). The second number must not be zero.\n" +
+                "- POW a b     : Raises the first number to the power of the second (a^b).\n" +
+                "- MOD a b     : Returns the remainder when the first number is divided by the second (a % b).\n\n" +
+                "- SQRT a      : Returns the square root of a. Only positive numbers are allowed.\n" +
+                "- EXP a       : Returns e raised to the power of a (e^a).\n" +
+                "- LN a        : Returns the natural logarithm (base e) of a. Only positive numbers are allowed.\n" +
+                "- SIN a       : Returns the sine of a (a in radians).\n" +
+                "- COS a       : Returns the cosine of a (a in radians).\n" +
+                "- TAN a       : Returns the tangent of a (a in radians).\n\n" +
+                "- ABS a       : Returns the absolute value of a.\n" +
+                "- MAX a b     : Returns the maximum of two numbers.\n" +
+                "- MIN a b     : Returns the minimum of two numbers.\n" +
+                "- CEIL a      : Returns the smallest integer greater than or equal to a.\n" +
+                "- FLOOR a     : Returns the largest integer less than or equal to a.\n" +
+                "- ROUND a     : Rounds a to the nearest integer.\n\n" +
+                "- HELP        : Displays this help message with explanations for each command.\n" +
+                "- EXIT        : Closes the connection to the server.\n";
     }
-
 }
