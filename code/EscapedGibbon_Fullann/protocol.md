@@ -33,6 +33,47 @@ If the operation is not possible, like `DIVIDE 10 0` or `SQRT -10` the server re
 
 ## Example dialogs
 
+                         +-------------+                           +--------------+
+                         |   Client    |                           |   Serveur    |
+                         +-------------+                           +--------------+
+                                |                                          |
+                                |                                          |
+                                |  1. Connexion au serveur                 |
+                                |-----------------------------------------> |
+                                |                                          |
+                                |                                          |
+                                |   2. Envoi message de bienvenue          |
+                                | <---------------------------------------  |
+                                |                                          |
+                                |                                          |
+                                |  3. Envoi de commande HELP               |
+                                |-----------------------------------------> |
+                                |                                          |
+                                |                                          |
+                                |   4. Réponse à HELP (liste commandes)    |
+                                | <---------------------------------------  |
+                                |                                          |
+                                |                                          |
+                                |  5. Envoi d'une commande utilisateur     |
+                                |     (ex: ADD 3 5)                        |
+                                |-----------------------------------------> |
+                                |                                          |
+                                |                                          |
+                                |   6. Réponse avec résultat (ex: 8)       |
+                                | <---------------------------------------  |
+                                |                                          |
+                                |                                          |
+                                |  7. Envoi de commande 'EXIT'             |
+                                |-----------------------------------------> |
+                                |                                          |
+                                |                                          |
+                                |   8. Fermeture de la connexion           |
+                                | <---------------------------------------  |
+                                |                                          |
+                         +-------------+                           +--------------+
+                         |  Fin Client |                           |  Fin Serveur |
+                         +-------------+                           +--------------+
+
 ### Client Functions
 
 - connect()

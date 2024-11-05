@@ -1,9 +1,11 @@
+package ch.heig.dai.lab.protocoldesign;
+
 import java.io.*;
 import java.net.*;
 
 public class Server {
 
-    // Constantes pour les opérations supportées
+    // Constants for supported operations
     private static final String WELCOME_MESSAGE = "Welcome! Type 'HELP' to see available commands and usage.";
     private static final int SERVER_PORT = 1234;
 
@@ -16,18 +18,18 @@ public class Server {
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                    // Envoyer un message de bienvenue au client
+                    //Send a welcome message to a client
                     out.println(WELCOME_MESSAGE);
 
                     String clientMessage;
                     while ((clientMessage = in.readLine()) != null) {
-                        // Vérifier la commande de terminaison
+                        // Check the EXIT command
                         if (clientMessage.trim().equalsIgnoreCase("EXIT")) {
                             out.println("Goodbye!");
                             break;
                         }
 
-                        // Traiter le message du client
+                        //Process client's message 
                         String response = processRequest(clientMessage);
                         sendMultilineResponse(out, response);
                     }
@@ -41,7 +43,7 @@ public class Server {
     }
 
     /**
-     * Traite la requête du client et retourne la réponse appropriée.
+     * Processes clients request and returns an appropriate response
      */
     private static String processRequest(String request) {
         String[] tokens = request.trim().split("\\s+");
@@ -59,10 +61,10 @@ public class Server {
         try {
             a = Double.parseDouble(tokens[1]);
             if (tokens.length == 2) {
-                // Opérations à un seul opérande
+               //Unary operator
                 return "Result: " + calculate(operation, a);
             } else if (tokens.length == 3) {
-                // Opérations à deux opérandes
+               //Binary operator
                 double b = Double.parseDouble(tokens[2]);
                 return "Result: " + calculate(operation, a, b);
             }
@@ -76,7 +78,7 @@ public class Server {
     }
 
     /**
-     * Calcule les opérations binaires
+     * Calculates binary operations
      */
     private static double calculate(String operation, double a, double b) {
         switch (operation) {
@@ -95,7 +97,7 @@ public class Server {
     }
 
     /**
-     * Calcule les opérations unaires
+     * Calculates unary operations
      */
     private static double calculate(String operation, double a) {
         switch (operation) {
@@ -118,7 +120,7 @@ public class Server {
     }
 
     /**
-     * Fournit le message d'aide en plusieurs lignes.
+     * Processes multiline messages.
      */
     private static String getHelpMessage() {
         return "Available commands:\n\n" +
@@ -145,13 +147,13 @@ public class Server {
     }
 
     /**
-     * Envoie une réponse multi-lignes au client, en ajoutant un marqueur <END> à la fin.
+     * Sends a multiline response to the client. Puts <END> at the end of the message.
      */
     private static void sendMultilineResponse(PrintWriter out, String response) {
         String[] lines = response.split("\n");
         for (String line : lines) {
             out.println(line);
         }
-        out.println("<END>");  // Marqueur de fin
+        out.println("<END>");  // END marker
     }
 }
